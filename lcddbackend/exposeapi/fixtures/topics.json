@@ -1,0 +1,176 @@
+[
+  {
+    "model": "exposeapi.topic",
+    "pk": 1,
+    "fields": { "title": "Arbitrage", "thumbnail": "topics/image01.svg" }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 2,
+    "fields": {
+      "title": "Associations et fondations",
+      "thumbnail": "topics/image02.svg"
+    }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 3,
+    "fields": { "title": "Assurances", "thumbnail": "topics/image03.svg" }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 4,
+    "fields": { "title": "Banque et bourse", "thumbnail": "topics/image04.svg" }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 5,
+    "fields": {
+      "title": "Affaires et concurrence",
+      "thumbnail": "topics/image05.svg"
+    }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 6,
+    "fields": {
+      "title": "Crédit et consommation",
+      "thumbnail": "topics/image06.svg"
+    }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 7,
+    "fields": {
+      "title": "Dommages corporels",
+      "thumbnail": "topics/image07.svg"
+    }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 8,
+    "fields": {
+      "title": "Droit international et de l'Union Européenne",
+      "thumbnail": "topics/image08.svg"
+    }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 9,
+    "fields": { "title": "Droit public", "thumbnail": "topics/image09.svg" }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 10,
+    "fields": { "title": "Droit rural", "thumbnail": "topics/image10.svg" }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 11,
+    "fields": { "title": "Environnement", "thumbnail": "topics/image11.svg" }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 12,
+    "fields": {
+      "title": "Etrangers et nationalité",
+      "thumbnail": "topics/image12.svg"
+    }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 13,
+    "fields": {
+      "title": "Famille, personnes et patrimoine",
+      "thumbnail": "topics/image13.svg"
+    }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 14,
+    "fields": { "title": "Fiducie", "thumbnail": "topics/image14.svg" }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 15,
+    "fields": {
+      "title": "Fiscalité et douane",
+      "thumbnail": "topics/image15.svg"
+    }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 16,
+    "fields": {
+      "title": "Garanties, sûretés et mesures d'exécution",
+      "thumbnail": "topics/image16.svg"
+    }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 17,
+    "fields": { "title": "Immobilier", "thumbnail": "topics/image17.svg" }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 18,
+    "fields": { "title": "Pénal", "thumbnail": "topics/image18.svg" }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 19,
+    "fields": {
+      "title": "Procédure d'appel",
+      "thumbnail": "topics/image19.svg"
+    }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 20,
+    "fields": {
+      "title": "Propriété intellectuelle",
+      "thumbnail": "topics/image20.svg"
+    }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 21,
+    "fields": { "title": "Santé", "thumbnail": "topics/image21.svg" }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 22,
+    "fields": {
+      "title": "Sécurité sociale et protection sociale",
+      "thumbnail": "topics/image22.svg"
+    }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 23,
+    "fields": { "title": "Sociétés", "thumbnail": "topics/image23.svg" }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 24,
+    "fields": { "title": "Sport", "thumbnail": "topics/image24.svg" }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 25,
+    "fields": {
+      "title": "Technologie et informatique",
+      "thumbnail": "topics/image25.svg"
+    }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 26,
+    "fields": { "title": "Transport", "thumbnail": "topics/image26.svg" }
+  },
+  {
+    "model": "exposeapi.topic",
+    "pk": 27,
+    "fields": { "title": "Travail", "thumbnail": "topics/image27.svg" }
+  }
+]

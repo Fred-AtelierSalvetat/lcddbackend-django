@@ -1,10 +1,21 @@
 from django.contrib import admin
-from .models import Topic
+from .models import Keyword, Link, RefLegifrance, Topic, Workshop
 
-class TopicAdmin(admin.ModelAdmin):
-    list_display = ('title',)
-    list_filter = ( 'title',)
-    search_fields = ('title', )
-    ordering = ('id', )
+admin.site.register(Topic)
+admin.site.register(RefLegifrance)
 
-admin.site.register(Topic, TopicAdmin)
+class KeywordInline(admin.TabularInline):
+    model = Keyword
+
+class LinkInline(admin.TabularInline):
+    model = Link
+
+class WorkshopAdmin(admin.ModelAdmin):
+    model = Workshop
+    inlines = [
+        KeywordInline,
+        LinkInline,
+    ]
+
+
+admin.site.register(Workshop, WorkshopAdmin)

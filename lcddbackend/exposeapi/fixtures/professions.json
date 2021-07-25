@@ -1,0 +1,37 @@
+[
+  {
+    "model": "exposeapi.profession",
+    "pk": 1,
+    "fields": { "profession": "Avocat" }
+  },
+  {
+    "model": "exposeapi.profession",
+    "pk": 2,
+    "fields": { "profession": "Enseignant - chercheur" }
+  },
+  {
+    "model": "exposeapi.profession",
+    "pk": 3,
+    "fields": { "profession": "Commissaire de Justice" }
+  },
+  {
+    "model": "exposeapi.profession",
+    "pk": 4,
+    "fields": { "profession": "Juriste" }
+  },
+  {
+    "model": "exposeapi.profession",
+    "pk": 5,
+    "fields": { "profession": "Magistrat" }
+  },
+  {
+    "model": "exposeapi.profession",
+    "pk": 6,
+    "fields": { "profession": "Mandataire / Administrateur Judiciaire" }
+  },
+  {
+    "model": "exposeapi.profession",
+    "pk": 7,
+    "fields": { "profession": "Notaire" }
+  }
+]

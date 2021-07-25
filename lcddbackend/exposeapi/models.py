@@ -1,5 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import User
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 class Topic(models.Model):
     title = models.CharField(max_length= 100, unique=True)
@@ -67,3 +70,40 @@ class Keyword(models.Model):
     
     def __str__(self):
         return self.keyword
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    city = models.CharField(max_length=100, default="")
+    interests = models.ManyToManyField(Topic, blank=True)
+
+    def __str__(self) -> str:
+        return super().__str__()
+    
+    @receiver(post_save, sender=User)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            UserProfile.objects.create(user=instance)
+
+    @receiver(post_save, sender=User)
+    def save_user_profile(sender, instance, **kwargs):
+        instance.userprofile.save()
+
+class Profession(models.Model):
+    profession = models.CharField(max_length=64, unique=True);
+
+    def __str__(self):
+        return self.profession
+
+class SpeakerProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profession = models.ForeignKey(Profession, on_delete=models.CASCADE)
+    phone = models.CharField(max_length=32)  
+    pro_email = models.EmailField()
+    biography = models.TextField(blank=True)
+
+    def __str__(self):
+        return '%s, profession: %s, phone: %s, email: %s' % (self.user.username, self.profession, self.phone, self.pro_email)
+   
+    class Meta:
+        verbose_name='Speaker'
+#     avatar

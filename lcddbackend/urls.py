@@ -15,11 +15,27 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path, include
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 
+schema_view = get_schema_view(
+   openapi.Info(
+      title="Lcdd API",
+      default_version='v1',
+      description="A simple django based backend intended to be used as stub. It serves API, persists data, serves static and media ressources.",
+      terms_of_service="https://www.google.com/policies/terms/",
+      contact=openapi.Contact(email="frederic.salvetat.developper@gmail.com"),
+      license=openapi.License(name="BSD License"),
+   ),
+   public=True,
+   permission_classes=(permissions.AllowAny,),
+)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path(r'^api/', include('lcddbackend.exposeapi.urls'))
+    path(r'swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    re_path(r'^api/', include('lcddbackend.exposeapi.urls')),   
 ]

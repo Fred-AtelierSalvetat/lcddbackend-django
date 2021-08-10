@@ -1,0 +1,37 @@
+[
+  {
+    "model": "auth.group",
+    "pk": 1,
+    "fields": { "name": "Speaker_awaiting_answer", "permissions": [] }
+  },
+  {
+    "model": "auth.group",
+    "pk": 2,
+    "fields": { "name": "Speaker_awaiting_validation", "permissions": [] }
+  },
+  {
+    "model": "auth.group",
+    "pk": 3,
+    "fields": { "name": "Speaker", "permissions": [] }
+  },
+  {
+    "model": "auth.group",
+    "pk": 4,
+    "fields": { "name": "Professional", "permissions": [] }
+  },
+  {
+    "model": "auth.group",
+    "pk": 5,
+    "fields": { "name": "Student", "permissions": [] }
+  },
+  {
+    "model": "auth.group",
+    "pk": 6,
+    "fields": { "name": "Citizen", "permissions": [] }
+  },
+  {
+    "model": "auth.group",
+    "pk": 7,
+    "fields": { "name": "Admin", "permissions": [] }
+  }
+]

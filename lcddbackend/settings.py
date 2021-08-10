@@ -44,9 +44,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'drf_yasg',
+    'django_filters',
+    'crispy_forms',
     'rest_framework',
     'lcddbackend',
     'lcddbackend.exposeapi',
+
 
 ]
 

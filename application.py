@@ -1,1 +1,2 @@
-python3 manage.py runserver
+#!/usr/bin/env python3
+manage.py runserver

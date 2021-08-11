@@ -80,6 +80,5 @@ class ProfessionSerializer(serializers.ModelSerializer):
 
 # TODO
 # POST, PUT workshop nested manytomany  + foreign
-# Learn Filter users to get admins / speakers / others
-# Manage files
+# Manage filesx&
 # Normalized API response??

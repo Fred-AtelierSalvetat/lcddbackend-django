@@ -40,11 +40,10 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path(r'swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    re_path(r'^api/', include('lcddbackend.exposeapi.urls')),
-    re_path('.*', TemplateView.as_view(template_name="home.html")),
+    re_path(r'^api/', include('lcddbackend.exposeapi.urls')),  
 ]
 
 if settings.DEBUG:
-    urlpatterns += [
-        re_path(r'^static/(?P<path>.*)$', views.serve),
-    ]
+    urlpatterns += [re_path(r'^static/(?P<path>.*)$', views.serve),]
+
+urlpatterns += [re_path('.*', TemplateView.as_view(template_name="home.html")),]

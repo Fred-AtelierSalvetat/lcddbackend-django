@@ -29,13 +29,15 @@ DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1',
                  'django-env.eba-bkqvym6c.eu-west-3.elasticbeanstalk.com']
 
-CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000',
+                        'https://master.d2k44v3ct5r7zo.amplifyapp.com']
 CORS_ALLOW_CREDENTIALS = True
 CORS_EXPOSE_HEADERS = ['Access-Control-Allow-Credentials']
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    'DEFAULT_PAGINATION_CLASS': None
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    # 'PAGE_SIZE': 10
 }
 
 # Application definition

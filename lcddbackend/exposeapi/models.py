@@ -120,10 +120,11 @@ class SpeakerProfile(models.Model):
     profession = models.ForeignKey(Profession, on_delete=models.CASCADE)
     phone = models.CharField(max_length=32)
     pro_email = models.EmailField()
+    bio_title = models.CharField(max_length=127, blank=True)
     biography = models.TextField(blank=True)
 
     def __str__(self):
-        return '%s, profession: %s, phone: %s, email: %s' % (self.user.username, self.profession, self.phone, self.pro_email)
+        return '%s, profession: %s, bio_title: %s, email: %s' % (self.user.username, self.profession, self.bio_title, self.pro_email)
 
     class Meta:
         verbose_name = 'Speaker'

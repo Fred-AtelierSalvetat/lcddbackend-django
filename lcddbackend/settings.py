@@ -26,7 +26,12 @@ SECRET_KEY = 'django-insecure-qx!%f11%pnozoq-)ku8wow5akli_ut%uj(_i($d!q&&dw$*6a1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'django-env.eba-bkqvym6c.eu-west-3.elasticbeanstalk.com']
+ALLOWED_HOSTS = ['127.0.0.1',
+                 'django-env.eba-bkqvym6c.eu-west-3.elasticbeanstalk.com']
+
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
+CORS_ALLOW_CREDENTIALS = True
+CORS_EXPOSE_HEADERS = ['Access-Control-Allow-Credentials']
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -47,6 +52,7 @@ INSTALLED_APPS = [
     'django_filters',
     'crispy_forms',
     'rest_framework',
+    'corsheaders',
     'lcddbackend',
     'lcddbackend.exposeapi',
 
@@ -56,6 +62,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',

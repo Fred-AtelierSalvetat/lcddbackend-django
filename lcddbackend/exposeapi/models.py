@@ -7,7 +7,7 @@ from django.db.models.signals import post_save
 
 class Topic(models.Model):
     title = models.CharField(max_length=100, unique=True)
-    thumbnail = models.CharField(max_length=255)
+    thumbnail = models.ImageField(upload_to="topics/", blank=True)
 
     class Meta:
         verbose_name = "topic"
@@ -122,10 +122,10 @@ class SpeakerProfile(models.Model):
     pro_email = models.EmailField()
     bio_title = models.CharField(max_length=127, blank=True)
     biography = models.TextField(blank=True)
+    avatar = models.ImageField(upload_to="avatars/", blank=True)
 
     def __str__(self):
         return '%s, profession: %s, bio_title: %s, email: %s' % (self.user.username, self.profession, self.bio_title, self.pro_email)
 
     class Meta:
         verbose_name = 'Speaker'
-#     avatar

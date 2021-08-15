@@ -1,16 +1,17 @@
 from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg.inspectors import CoreAPICompatInspector, FieldInspector, NotHandled, SwaggerAutoSchema
-from  django_filters import FilterSet, ChoiceFilter
+from django_filters import FilterSet, ChoiceFilter
 from rest_framework import viewsets, mixins
 from .serializers import (
     ProfessionSerializer,
+    SpeakerProfileSerializers,
     TopicSerializer,
     RefLegifranceSerializer,
     UserProfileSerializer,
     WorkshopSerializer,
 )
-from .models import RefLegifrance, Topic, Workshop, UserProfile, Profession
+from .models import RefLegifrance, SpeakerProfile, Topic, Workshop, UserProfile, Profession
 from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import FilterSet, MultipleChoiceFilter
 
@@ -51,7 +52,8 @@ class DjangoFilterDescriptionInspector(CoreAPICompatInspector):
                 if not param.get('description', ''):
                     param.description = "Filter the returned list by {field_name}, multiple values are handles as OR : filter1 OR filter2".format(
                         field_name=param.name)
-                    param.enum = [ choice[0] for choice in UserProfile.Roles.choices]
+                    param.enum = [choice[0]
+                                  for choice in UserProfile.Roles.choices]
             return result
 
         return NotHandled
@@ -79,3 +81,8 @@ class UserProfileViewSet(viewsets.ModelViewSet):
 class ProfessionViewSet(ListOnlyViewSet):
     queryset = Profession.objects.all()
     serializer_class = ProfessionSerializer
+
+
+class SpeakerViewSet(ListOnlyViewSet):
+    queryset = SpeakerProfile.objects.all()
+    serializer_class = SpeakerProfileSerializers

@@ -1,20 +1,17 @@
 from django.conf import settings
 from django.contrib.sites.models import Site
 from rest_framework import serializers
-from .models import RefLegifrance, Profession, Topic, Workshop, Keyword, UserProfile
+from .models import RefLegifrance, Profession, Topic, Workshop, Keyword, UserProfile, SpeakerProfile
 from django.contrib.auth.models import User, Group
+from drf_extra_fields.fields import Base64ImageField
 
 
 class TopicSerializer(serializers.ModelSerializer):
-    thumbnail = serializers.SerializerMethodField()
+    thumbnail = Base64ImageField()
 
     class Meta:
         model = Topic
         fields = '__all__'
-
-    def get_thumbnail(self, obj):
-        current_site = Site.objects.get_current()
-        return current_site.domain + settings.STATIC_URL + obj.thumbnail
 
 
 class RefLegifranceSerializer(serializers.ModelSerializer):
@@ -78,7 +75,12 @@ class ProfessionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# TODO
-# POST, PUT workshop nested manytomany  + foreign
-# Manage filesx&
-# Normalized API response??
+class SpeakerProfileSerializers(serializers.ModelSerializer):
+    avatar = Base64ImageField()
+
+    class Meta:
+        model = SpeakerProfile
+        fields = '__all__'
+
+
+# TODOFSA TODO POST, PUT workshop nested manytomany  + foreign

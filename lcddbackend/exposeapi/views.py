@@ -1,19 +1,23 @@
 from django.utils.decorators import method_decorator
+from django_filters.utils import label_for_filter
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg.inspectors import CoreAPICompatInspector, FieldInspector, NotHandled, SwaggerAutoSchema
 from django_filters import FilterSet, ChoiceFilter
 from rest_framework import viewsets, mixins
 from .serializers import (
     ProfessionSerializer,
-    SpeakerProfileSerializers,
+    UserSerializer,
     TopicSerializer,
     RefLegifranceSerializer,
-    UserProfileSerializer,
     WorkshopSerializer,
 )
-from .models import RefLegifrance, SpeakerProfile, Topic, Workshop, UserProfile, Profession
+from .models import RefLegifrance, Topic, Workshop, Profession, User, UserProfile
 from django_filters.rest_framework import DjangoFilterBackend
-from django_filters import FilterSet, MultipleChoiceFilter
+from django_filters import FilterSet, MultipleChoiceFilter, BooleanFilter
+
+
+class ListOnlyViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    pass
 
 
 class ListOnlyViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -35,12 +39,21 @@ class WorkshopViewSet(viewsets.ModelViewSet):
     serializer_class = WorkshopSerializer
 
 
-class UserProfileFilter(FilterSet):
-    lcdd_role = MultipleChoiceFilter(choices=UserProfile.Roles.choices)
+class UserFilter(FilterSet):
+
+    def __init__(self, data=None, *args, **kwargs):
+        if data is not None:
+            data = data.copy()
+            data.setdefault("is_active", True)
+        super(UserFilter, self).__init__(data, *args, **kwargs)
+
+    lcdd_role = MultipleChoiceFilter(field_name="userprofile__lcdd_role",
+                                     choices=UserProfile.Roles.choices)
+    is_active = BooleanFilter(field_name='is_active')
 
     class Meta:
-        model = UserProfile
-        fields = ['lcdd_role']
+        model = User
+        fields = ['is_active', 'lcdd_role']
 
 
 class DjangoFilterDescriptionInspector(CoreAPICompatInspector):
@@ -50,10 +63,15 @@ class DjangoFilterDescriptionInspector(CoreAPICompatInspector):
                            self).get_filter_parameters(filter_backend)
             for param in result:
                 if not param.get('description', ''):
-                    param.description = "Filter the returned list by {field_name}, multiple values are handles as OR : filter1 OR filter2".format(
-                        field_name=param.name)
-                    param.enum = [choice[0]
-                                  for choice in UserProfile.Roles.choices]
+                    if param.name == 'lcdd_role':
+                        param.description = "Filter the returned list by {field_name}.\nMultiple values are handles as OR :\n<pre>    lcdd_role=CITIZEN&lcdd_role=ADMIN => lcdd_role = CITIZEN OR ADMIN </pre>".format(
+                            field_name=param.name)
+                        param.enum = [choice[0]
+                                      for choice in UserProfile.Roles.choices]
+                    elif param.name == "is_active":
+                        param.description = 'default value : True'
+                        param.enum = ["All", "True", "False"]
+                        pass
             return result
 
         return NotHandled
@@ -62,27 +80,14 @@ class DjangoFilterDescriptionInspector(CoreAPICompatInspector):
 @method_decorator(name='list', decorator=swagger_auto_schema(
     filter_inspectors=[DjangoFilterDescriptionInspector]
 ))
-class UserProfileViewSet(viewsets.ModelViewSet):
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
+class UserViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
+    http_method_names = ['get', 'post', 'head', 'patch']
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_class = UserProfileFilter
-
-    def get_queryset(self):
-        queryset = UserProfile.objects.all()
-        role_params = self.request.query_params.getlist('lcdd_role')
-        if role_params is not None:
-            queryset = queryset.filter(
-                lcdd_role__in=role_params)
-
-        return queryset
+    filterset_class = UserFilter
 
 
 class ProfessionViewSet(ListOnlyViewSet):
     queryset = Profession.objects.all()
     serializer_class = ProfessionSerializer
-
-
-class SpeakerViewSet(ListOnlyViewSet):
-    queryset = SpeakerProfile.objects.all()
-    serializer_class = SpeakerProfileSerializers

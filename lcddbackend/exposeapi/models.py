@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from sortedm2m.fields import SortedManyToManyField
 
 
 class Topic(models.Model):
@@ -43,12 +44,12 @@ class Workshop(models.Model):
     title = models.CharField(max_length=127)
     startingdate = models.DateTimeField()
     # speakers: [intervenants[0].value],
-    topics = models.ManyToManyField(Topic)
+    topics = SortedManyToManyField(Topic)
     description = models.TextField()
-    refsLegifrance = models.ManyToManyField(RefLegifrance, blank=True)
+    refsLegifrance = SortedManyToManyField(RefLegifrance, blank=True)
 
     # files: [],
-    # links= models.ManyToManyField(Link, null= True)
+    # links= models.SortedManyToManyField(Link, null= True)
 
     class Meta:
         verbose_name = "workshop"
@@ -77,6 +78,13 @@ class Keyword(models.Model):
         return self.keyword
 
 
+class Profession(models.Model):
+    label = models.CharField(max_length=64, unique=True)
+
+    def __str__(self):
+        return self.label
+
+
 class UserProfile(models.Model):
     class Roles(models.TextChoices):
         SPEAKER_AWAITING_ANSWER = 'SPEAKER_AWAITING_ANSWER', _(
@@ -89,11 +97,19 @@ class UserProfile(models.Model):
         CITIZEN = 'CITIZEN', _('Citizen')
         ADMIN = 'ADMIN', _('Admin')
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        User, related_name='userprofile', on_delete=models.CASCADE)
     lcdd_role = models.CharField(
         max_length=32, choices=Roles.choices, default=Roles.CITIZEN)
     city = models.CharField(max_length=100, default="")
-    interests = models.ManyToManyField(Topic, blank=True)
+    interests = SortedManyToManyField(Topic, blank=True)
+    profession = models.ForeignKey(
+        Profession, blank=True, null=True, on_delete=models.CASCADE)
+    phone = models.CharField(max_length=32, blank=True)
+    pro_email = models.EmailField(blank=True)
+    bio_title = models.CharField(max_length=127, blank=True)
+    biography = models.TextField(blank=True)
+    avatar = models.ImageField(upload_to="avatars/", blank=True)
 
     def __str__(self) -> str:
         return super().__str__()
@@ -106,26 +122,3 @@ class UserProfile(models.Model):
     @receiver(post_save, sender=User)
     def save_user_profile(sender, instance, **kwargs):
         instance.userprofile.save()
-
-
-class Profession(models.Model):
-    profession = models.CharField(max_length=64, unique=True)
-
-    def __str__(self):
-        return self.profession
-
-
-class SpeakerProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profession = models.ForeignKey(Profession, on_delete=models.CASCADE)
-    phone = models.CharField(max_length=32)
-    pro_email = models.EmailField()
-    bio_title = models.CharField(max_length=127, blank=True)
-    biography = models.TextField(blank=True)
-    avatar = models.ImageField(upload_to="avatars/", blank=True)
-
-    def __str__(self):
-        return '%s, profession: %s, bio_title: %s, email: %s' % (self.user.username, self.profession, self.bio_title, self.pro_email)
-
-    class Meta:
-        verbose_name = 'Speaker'

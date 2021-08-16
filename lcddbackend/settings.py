@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'drf_yasg',
     'django_filters',
+    'sortedm2m',
     'crispy_forms',
     'rest_framework',
     'corsheaders',

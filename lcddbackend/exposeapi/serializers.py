@@ -50,12 +50,12 @@ class UserSerializer(serializers.ModelSerializer):
     pro_email = serializers.EmailField(source="userprofile.pro_email")
     bio_title = serializers.CharField(source="userprofile.bio_title")
     biography = serializers.CharField(source="userprofile.biography")
-    # avatar = Base64ImageField(source="userprofile.avatar", required=True)
+    avatar = Base64ImageField(source="userprofile.avatar", read_only=False)
 
     class Meta:
         model = User
         fields = ('id', 'first_name', 'last_name', 'email', 'is_active', 'lcdd_role', 'city',
-                  'interests', 'profession', 'phone', 'pro_email', 'bio_title', 'biography')  # , 'avatar')
+                  'interests', 'profession', 'phone', 'pro_email', 'bio_title', 'biography', 'avatar')
 
     def to_internal_value(self, data):
         print("to_internal_value, input data=", data)
@@ -96,6 +96,8 @@ class UserSerializer(serializers.ModelSerializer):
             validated_data['userprofile']['bio_title'] = data.get('bio_title')
         if data.get('bio_title'):
             validated_data['userprofile']['biography'] = data.get('biography')
+        if data.get('avatar'):
+            validated_data['userprofile']['avatar'] = data.get('avatar')
 
         return validated_data
 
@@ -126,6 +128,7 @@ class UserSerializer(serializers.ModelSerializer):
             pro_email = userprofile_data.get('pro_email')
             bio_title = userprofile_data.get('bio_title')
             biography = userprofile_data.get('biography')
+            avatar = userprofile_data.get('avatar')
             userprofile = instance.userprofile
             if lcdd_role:
                 userprofile.lcdd_role = lcdd_role
@@ -145,7 +148,8 @@ class UserSerializer(serializers.ModelSerializer):
                 userprofile.bio_title = bio_title
             if biography:
                 userprofile.biography = biography
-
+            if avatar:
+                userprofile.avatar = avatar
             userprofile.save()
 
         # TODOFSA

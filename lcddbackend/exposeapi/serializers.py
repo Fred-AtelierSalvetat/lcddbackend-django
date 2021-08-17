@@ -1,11 +1,18 @@
-from django.conf import settings
-from django.contrib.sites.models import Site
 from django.db.models.fields import EmailField
 from rest_framework import serializers
-from .models import RefLegifrance, Profession, Topic, Workshop, Keyword
-from django.contrib.auth.models import User, Group
+from .models import RefLegifrance, Profession, Topic, Workshop, Keyword, UserProfile
+from django.contrib.auth.models import User
 from drf_extra_fields.fields import Base64ImageField
-from operator import itemgetter
+
+
+class EditableBase64ImageField(Base64ImageField):
+    class Meta:
+        swagger_schema_fields = {
+            'type': 'string',
+            'title': 'File Content',
+            'description': 'Content of the file base64 encoded',
+            'read_only': False  # <-- FIX
+        }
 
 
 class TopicSerializer(serializers.ModelSerializer):
@@ -50,7 +57,7 @@ class UserSerializer(serializers.ModelSerializer):
     pro_email = serializers.EmailField(source="userprofile.pro_email")
     bio_title = serializers.CharField(source="userprofile.bio_title")
     biography = serializers.CharField(source="userprofile.biography")
-    avatar = Base64ImageField(source="userprofile.avatar", read_only=False)
+    avatar = EditableBase64ImageField(source="userprofile.avatar")
 
     class Meta:
         model = User
@@ -59,7 +66,17 @@ class UserSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         print("to_internal_value, input data=", data)
-        validated_data = {'userprofile': {}}
+        validated_data = {
+            'userprofile': {}
+        }
+        if data.get('first_name'):
+            validated_data['first_name'] = data.get('first_name')
+        if data.get('last_name'):
+            validated_data['last_name'] = data.get('last_name')
+        if data.get('email'):
+            validated_data['email'] = data.get('email')
+        if data.get('is_active'):
+            validated_data['is_active'] = data.get('is_active')
         interests = data.get('interests')
         if interests:
             if not isinstance(interests, list):
@@ -103,8 +120,13 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         print("validated_data =", validated_data)
-        # book = Book.objects.get(script_title="some_title")
-        return User.objects.create(**validated_data)
+
+        # userProfile = UserProfile.objects.create(
+        #     **validated_data['userprofile'])
+        # validated_data['userprofile'] = userProfile
+        UserProfile.objects.create(**validated_data['userprofile'])
+        user = User.objects.create(**validated_data)
+        return user
 
     def update(self, instance, validated_data):
         instance.first_name = validated_data.get(
@@ -153,7 +175,7 @@ class UserSerializer(serializers.ModelSerializer):
             userprofile.save()
 
         # TODOFSA
-        # Implement create
+        # Fix avatar upload
         # Add data type desc to Profession, Topics
 
         return instance
@@ -165,4 +187,4 @@ class ProfessionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# TODOFSA TODO POST, PUT workshop or user/topics nested manytomany(topics)  + foreign(profession)
+# TODOFSA TODO Manage Image files upload through rest API ( avatar)

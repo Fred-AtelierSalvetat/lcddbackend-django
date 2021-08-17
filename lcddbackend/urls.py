@@ -22,11 +22,12 @@ from django.views.generic import TemplateView
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from django.conf import settings
 
 schema_view = get_schema_view(
     openapi.Info(
         title="Lcdd API",
-        default_version='v1',
+        default_version=settings.API_VERSION,
         description="A simple django based backend intended to be used as stub. It serves API, persists data, serves static and media ressources.",
         terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(

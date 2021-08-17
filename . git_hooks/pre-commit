@@ -1,0 +1,5 @@
+#!/bin/sh
+echo "pre-commit started"
+pwd
+version=$(cat ./VERSION.TXT); y=$((version=version+1)); echo $y > VERSION.TXT
+git add VERSION.TXT

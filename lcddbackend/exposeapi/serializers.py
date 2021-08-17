@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import RefLegifrance, Profession, Topic, Workshop, Keyword, UserProfile
 from django.contrib.auth.models import User
 from drf_extra_fields.fields import Base64ImageField
+import uuid
 
 
 class EditableBase64ImageField(Base64ImageField):
@@ -65,7 +66,6 @@ class UserSerializer(serializers.ModelSerializer):
                   'interests', 'profession', 'phone', 'pro_email', 'bio_title', 'biography', 'avatar')
 
     def to_internal_value(self, data):
-        print("to_internal_value, input data=", data)
         validated_data = {
             'userprofile': {}
         }
@@ -77,6 +77,16 @@ class UserSerializer(serializers.ModelSerializer):
             validated_data['email'] = data.get('email')
         if data.get('is_active'):
             validated_data['is_active'] = data.get('is_active')
+        if data.get('city'):
+            validated_data['userprofile']['city'] = data.get('city')
+        lcdd_role = data.get('lcdd_role')
+        if lcdd_role:
+            choices = [choice[0] for choice in UserProfile.Roles.choices]
+            if not lcdd_role in choices:
+                raise serializers.ValidationError({
+                    'lcdd_role': 'Authorized values are ' + ", ".join(choices)
+                })
+            validated_data['userprofile']['lcdd_role'] = lcdd_role
         interests = data.get('interests')
         if interests:
             if not isinstance(interests, list):
@@ -118,14 +128,47 @@ class UserSerializer(serializers.ModelSerializer):
 
         return validated_data
 
-    def create(self, validated_data):
-        print("validated_data =", validated_data)
+    def updateUserProfile(_, userprofile, userprofile_data):
+        # WTF! I want ES6 destructuring
+        lcdd_role = userprofile_data.get('lcdd_role')
+        city = userprofile_data.get('city')
+        interests = userprofile_data.get('interests')
+        profession = userprofile_data.get('profession')
+        phone = userprofile_data.get('phone')
+        pro_email = userprofile_data.get('pro_email')
+        bio_title = userprofile_data.get('bio_title')
+        biography = userprofile_data.get('biography')
+        avatar = userprofile_data.get('avatar')
 
-        # userProfile = UserProfile.objects.create(
-        #     **validated_data['userprofile'])
-        # validated_data['userprofile'] = userProfile
-        UserProfile.objects.create(**validated_data['userprofile'])
+        if lcdd_role:
+            userprofile.lcdd_role = lcdd_role
+        if city:
+            userprofile.city = city
+        if interests:
+            userprofile.interests.set(
+                [Topic.objects.get(title=interest) for interest in interests])
+        if profession:
+            userprofile.profession = Profession.objects.get(
+                label=profession)
+        if phone:
+            userprofile.phone = phone
+        if pro_email:
+            userprofile.pro_email = pro_email
+        if bio_title:
+            userprofile.bio_title = bio_title
+        if biography:
+            userprofile.biography = biography
+        if avatar:
+            userprofile.avatar = avatar
+        return userprofile
+
+    def create(self, validated_data):
+        userprofile_data = validated_data.pop('userprofile')
+        validated_data['username'] = uuid.uuid4().hex
+        # No user name in lcdd? Strange... Anyway as it's a quick dev, I stay with default model
         user = User.objects.create(**validated_data)
+        if userprofile_data:
+            self.updateUserProfile(user.userprofile, userprofile_data)
         return user
 
     def update(self, instance, validated_data):
@@ -140,38 +183,8 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
 
         if 'userprofile' in validated_data:
-            userprofile_data = validated_data.pop('userprofile')
-            # WTF! I want ES6 destructuring
-            lcdd_role = userprofile_data.get('userprofile_data')
-            city = userprofile_data.get('city')
-            interests = userprofile_data.get('interests')
-            profession = userprofile_data.get('profession')
-            phone = userprofile_data.get('phone')
-            pro_email = userprofile_data.get('pro_email')
-            bio_title = userprofile_data.get('bio_title')
-            biography = userprofile_data.get('biography')
-            avatar = userprofile_data.get('avatar')
-            userprofile = instance.userprofile
-            if lcdd_role:
-                userprofile.lcdd_role = lcdd_role
-            if city:
-                userprofile.city = city
-            if interests:
-                userprofile.interests.set(
-                    [Topic.objects.get(title=interest) for interest in interests])
-            if profession:
-                userprofile.profession = Profession.objects.get(
-                    label=profession)
-            if phone:
-                userprofile.phone = phone
-            if pro_email:
-                userprofile.pro_email = pro_email
-            if bio_title:
-                userprofile.bio_title = bio_title
-            if biography:
-                userprofile.biography = biography
-            if avatar:
-                userprofile.avatar = avatar
+            userprofile = self.updateUserProfile(
+                instance.userprofile, validated_data.pop('userprofile'))
             userprofile.save()
 
         # TODOFSA

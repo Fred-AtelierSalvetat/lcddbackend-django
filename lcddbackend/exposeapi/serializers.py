@@ -1,4 +1,3 @@
-from django.db.models.fields import EmailField
 from rest_framework import serializers
 from .models import RefLegifrance, Profession, Topic, Workshop, Keyword, UserProfile
 from django.contrib.auth.models import User
@@ -37,8 +36,7 @@ class KeywordSerializer(serializers.ModelSerializer):
 
 
 class WorkshopSerializer(serializers.ModelSerializer):
-
-    keywords = KeywordSerializer(many=True, read_only=True)
+    keywords = KeywordSerializer(many=True)
 
     class Meta:
         model = Workshop
@@ -49,16 +47,22 @@ class WorkshopSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    lcdd_role = serializers.CharField(source="userprofile.lcdd_role")
-    city = serializers.CharField(source="userprofile.city")
+    lcdd_role = serializers.CharField(
+        source="userprofile.lcdd_role", required=False)
+    city = serializers.CharField(source="userprofile.city", required=False)
     interests = serializers.StringRelatedField(
-        many=True, source="userprofile.interests")
-    profession = serializers.CharField(source="userprofile.profession")
-    phone = serializers.CharField(source="userprofile.phone")
-    pro_email = serializers.EmailField(source="userprofile.pro_email")
-    bio_title = serializers.CharField(source="userprofile.bio_title")
-    biography = serializers.CharField(source="userprofile.biography")
-    avatar = EditableBase64ImageField(source="userprofile.avatar")
+        many=True, source="userprofile.interests", required=False)
+    profession = serializers.CharField(
+        source="userprofile.profession", required=False)
+    phone = serializers.CharField(source="userprofile.phone", required=False)
+    pro_email = serializers.EmailField(
+        source="userprofile.pro_email", required=False)
+    bio_title = serializers.CharField(
+        source="userprofile.bio_title", required=False)
+    biography = serializers.CharField(
+        source="userprofile.biography", required=False)
+    avatar = EditableBase64ImageField(
+        source="userprofile.avatar", required=False)
 
     class Meta:
         model = User
@@ -189,7 +193,6 @@ class UserSerializer(serializers.ModelSerializer):
 
         # TODOFSA
         # Fix avatar upload
-        # Add data type desc to Profession, Topics
 
         return instance
 

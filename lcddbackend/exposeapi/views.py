@@ -1,8 +1,7 @@
 from django.utils.decorators import method_decorator
-from django_filters.utils import label_for_filter
+from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from drf_yasg.inspectors import CoreAPICompatInspector, FieldInspector, NotHandled, SwaggerAutoSchema
-from django_filters import FilterSet, ChoiceFilter
+from drf_yasg.inspectors import CoreAPICompatInspector, FieldInspector, NotHandled
 from rest_framework import viewsets, mixins
 from .serializers import (
     ProfessionSerializer,
@@ -77,8 +76,36 @@ class DjangoFilterDescriptionInspector(CoreAPICompatInspector):
         return NotHandled
 
 
-@method_decorator(name='list', decorator=swagger_auto_schema(
-    filter_inspectors=[DjangoFilterDescriptionInspector]
+class DjangoFieldsInspector(FieldInspector):
+    def process_result(self, result, method_name, obj, **kwargs):
+        if isinstance(result, openapi.Schema.OR_REF):
+            # traverse any references and alter the Schema object in place
+            schema = openapi.resolve_ref(result, self.components)
+            title = schema.get('title', None)
+            type = schema.get('type', None)
+            if title == 'Lcdd role':
+                schema.__setattr__(
+                    'enum', [choice[0] for choice in UserProfile.Roles.choices])
+            elif title == 'Profession':
+                schema.__setattr__(
+                    'description', "An already defined Profession's label")
+            elif title == 'File Content':
+                schema.pop('description')
+            elif type == 'array':  # Duno why this filed doesn't have title...
+                schema.__setattr__(
+                    'description', "A array of already defined Topic's title")
+            # ex : scheme = Schema([('title', 'First name'), ('type', 'string'), ('maxLength', 150)])
+
+            # no ``return schema`` here, because it would mean we always generate
+            # an inline `object` instead of a definition reference
+
+        # return back the same object that we got - i.e. a reference if we got a reference
+        return result
+
+
+@ method_decorator(name='list', decorator=swagger_auto_schema(
+    filter_inspectors=[DjangoFilterDescriptionInspector],
+    field_inspectors=[DjangoFieldsInspector]
 ))
 class UserViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
     http_method_names = ['get', 'post', 'head', 'patch']

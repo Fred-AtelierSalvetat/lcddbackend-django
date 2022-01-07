@@ -1,4 +1,7 @@
 # lcddbackend-django
+Made with : PYTHON, DJANGO, REST API, AWS Elastic Beanstalk
+
+--- 
 Un backend exposant une API REST pour les devs front.
 
 Le backend n'était pas prêt, le swagger non plus, la spec non plus, mais... j'ai eu la liberté de FAIRE.
@@ -12,5 +15,6 @@ A simle REST API backend developped to allow frontend dev.
 
 Backend implementation not ready, swagger unavailable, spec unavailable, but... freedom to DO.
 Then I did this little backend to specify a first version of API, allow my frontend devs and ... HAVE FUN! :)
+Avec un déployement sur AWS Elastic Beanstalk pour apprendre.
 
 Thank to lcdd, la chaine du droit for the good time working together.
